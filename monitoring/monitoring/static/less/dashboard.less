@@ -1,0 +1,56 @@
+body {
+  margin: 0;
+  font-family: "Open Sans", Helvetica, Arial, '나눔고딕', '고딕', sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #212e49;
+  min-height: 100%;
+  width: 100%;
+}
+
+a {
+  color: #333;
+}
+
+.keyword {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  .keyword-list {
+    .label {
+      cursor: pointer;
+      &.active {
+        font-size: 14px;
+        background-color: #d9534f;
+      }
+    }
+  }
+}
+
+.content-list {
+  padding: 0;
+  li {
+    list-style-type: none;
+    padding: 10px 0;
+    border-bottom: 1px solid #dbdbdb;
+    .title {
+      strong {
+        color: #F00;
+      }
+      .number {
+        display: inline-block;
+        width: 20px;
+      }
+    }
+    .info {
+      display: inline-block;
+      position: relative;
+      font-size: .8em;
+      line-height: 1.4em;
+      color: #888;
+      margin-left: 28px;
+    }
+  }
+}
+.badge {
+  margin-left: 10px;
+}

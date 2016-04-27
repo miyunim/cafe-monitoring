@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="keyword row col-md-12">
+    <form action="./" type="post" class="form-inline">
+      <input type="text" class="form-control input-sm" value="" id="keyword" name="keyword" />
+      <button class="btn btn-sm btn-success"><span>SAVE</span></button>
+    </form>
+  </div>
+  <div class="keyword row">
+    <div class="keyword-list col-md-12">
+      {% for word in words %}
+      <a data-keyword="{{ word.word }}" href="./?keyword={{ word.word }}" class="btn btn-primary {% if keyword == "" %}active{% endif %}">{{ word.word }}<span class="badge">{{ word.count }}</span></a>
+      {% endfor %}
+    </div>
+  </div>
+  {% if keyword == '' %}
+  <div class="alert alert-info" role="alert">키워드가 없는 경우는 최신글이 출력됩니다.</div>
+  {% endif %}
+  <div class="alert alert-success hide" role="alert"></div>
+  <div>
+    <ul class="content-list">
+    {% for item in html %}
+      <li>
+        <div class="title"><span class="number">{{ forloop.counter }}.</span>&nbsp;<a href="http://m.cafe.naver.com/{{ item.href }}">{{ item.title }}</a></div>
+        <div class="info">{{ item.info }}</div>
+      </li>
+    {% empty %}
+      <li>등록된 글이 없습니다.</li>
+    {% endfor %}
+    </ul>
+  </div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+$(function($) {
+  /*
+  var keyword = ("{{ keyword }}" == "") ? "최신글": "{{ keyword }}";
+  if(parseInt({{ total_count }}) > 1) {
+    $.each($('.main li a'), function(item, row) {
+      $(row).html($(row).text().replace(keyword, '<strong>{{ keyword }}</strong>'));
+    });
+
+    if(parseInt(localStorage.getItem(keyword)) != parseInt({{ total_count }})) {
+      $('.alert.alert-success').html('<strong>새글알림!</strong><br/>' + keyword + '로 새글이 등록되었습니다.');
+      $('.alert.alert-success').removeClass("hide");
+      localStorage.setItem(keyword, {{ total_count }});
+    }
+    $.each(localStorage, function(_keyword, count) {
+      $('a[data-keyword=' + _keyword + ']').html(_keyword + '<span class="badge">' + count + '</span>');
+    });
+  }
+  */
+  window.getListCount = function(keyword) {
+    var url = '{% url "wordCount" %}';
+    $.ajax({
+      'url': url,
+      'type': 'GET',
+      'data': {'keyword': (keyword == '최신글') ? '': keyword},
+      'dataType': 'json',
+      'success': function(response) {
+        /*
+        if(localStorage[keyword] < response.total_count) {
+          newPostNotification('새글알림', keyword + '로 새글이 등록되었습니다.');
+        }
+        setTimeout(getKeywordForNewCount, 5000);
+        */
+      },
+      'error': function(error) {
+
+      }
+    });
+  }
+
+  window.newPostNotification = function(title, msg) {
+    Notification.requestPermission( function(status) {
+      window.n = new Notification(title, {body: msg, icon: 'https://m1.behance.net/rendition/modules/9504049/disp/e7ca62cff1c58b6709941e51825e738f.png'}); // this also shows the notification
+      n.close();
+    });
+  }
+
+  var getKeywordForNewCount = function() {
+    var keywordLength = $('.keyword-list a').length;
+
+    $.each($('.keyword-list a'), function(index, item) {
+      var keyword = $(item).attr('data-keyword');
+      getListCount(keyword);
+    });
+  }
+
+  getKeywordForNewCount();
+});
+</script>
+{% endblock %}
